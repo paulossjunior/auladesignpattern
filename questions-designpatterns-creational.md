@@ -5,11 +5,11 @@
 **Quando precisarmos organizar os Instanciações!**  
 
 ```js
-Class Model(){
+class Model(){
 
 }
 
-Class ModelX(){
+class ModelX(){
 
 }
 
@@ -27,16 +27,16 @@ Model modelxx = new ModelX()
 * Usando Metodo Fabrica
 
 ```js
-Class Model(){
+class Model(){
 
 }
 
-Class ModelX(){
+class ModelX(){
 
 }
 
 
-Class Fabrica {
+class Fabrica {
     import Model
     import ModelX
     import x.yz.g.z.Model
@@ -53,7 +53,7 @@ Class Fabrica {
     }
 }
 
-// Uso da classe Fabrica para criar instâncias
+c/ Uso da classe Fabrica para criar instâncias
 Model model = (Model) Fabrica.createModel("Model");
 ModelX modelx = (ModelX) Fabrica.createModel("ModelX");
 
@@ -61,15 +61,15 @@ ModelX modelx = (ModelX) Fabrica.createModel("ModelX");
 ## Model Fabrica
 ```mermaid
 classDiagram
-    %% Classe Model - Representa um tipo de modelo
+    c% Classe Model - Representa um tipo de modelo
     class Model {
     }
 
-    %% Classe ModelX - Representa outro tipo de modelo
+    c% Classe ModelX - Representa outro tipo de modelo
     class ModelX {
     }
 
-    %% Classe Fabrica - Implementa o método de fábrica
+    c% Classe Fabrica - Implementa o método de fábrica
     class Fabrica {
         +static createModel(modelName: String) Object
     }
@@ -85,16 +85,16 @@ classDiagram
 Resposta: Para definir um padrão de Métodos Fabricas
 
 ```js
-Class Model(){
+class Model(){
 
 }
 
-Class ModelX(){
+class ModelX(){
 
 }
 
 
-Class FabricaModel {
+class FabricaModel {
     import Model
 
     public static createModel(String modelName){
@@ -103,7 +103,7 @@ Class FabricaModel {
     }
 }
 
-Class FabricaModelX {
+class FabricaModelX {
     import ModelX
 
     public static createX(String modelName){
@@ -166,20 +166,20 @@ classDiagram
         +create(nomedofi: String) any
     }
 
-    %% Classe Model - Representa um tipo de modelo
+    c% Classe Model - Representa um tipo de modelo
     class Model {
     }
 
-    %% Classe ModelX - Representa outro tipo de modelo
+    c% Classe ModelX - Representa outro tipo de modelo
     class ModelX {
     }
 
-    %% Classe FabricaModel - Implementa a interface FabricaAbstrata para criar instâncias de Model
+    c% Classe FabricaModel - Implementa a interface FabricaAbstrata para criar instâncias de Model
     class FabricaModel {
         +create(nomedofi: String) any
     }
 
-    %% Classe FabricaModelX - Implementa a interface FabricaAbstrata para criar instâncias de ModelX
+    c% Classe FabricaModelX - Implementa a interface FabricaAbstrata para criar instâncias de ModelX
     class FabricaModelX {
         +create(nomedofi: String) any
     }
@@ -238,26 +238,26 @@ Endereco endereco = FabricaEndereco.create("Zé")
 ## Model
 ```mermaid
 classDiagram
-    %% Classe BuilderEndereco - Responsável por construir o Endereco
+    c% Classe BuilderEndereco - Responsável por construir o Endereco
     class BuilderEndereco {
         +Endereco create(nome_usuario: String)
     }
 
-    %% Classe FabricaEndereco - Fabrica que utiliza o BuilderEndereco para criar Endereco
+    c% Classe FabricaEndereco - Fabrica que utiliza o BuilderEndereco para criar Endereco
     class FabricaEndereco {
         +Endereco create(nome_usuario: String)
     }
 
-    %% Classe Usuario - Representa o usuário
+    c% Classe Usuario - Representa o usuário
     class Usuario {
     }
 
-    %% Classe Endereco - Representa o endereço associado ao usuário
+    c% Classe Endereco - Representa o endereço associado ao usuário
     class Endereco {
         +Endereco(usuario: Usuario)
     }
 
-    %% Relacionamentos entre as classes
+    c% Relacionamentos entre as classes
     FabricaEndereco ..> BuilderEndereco : utiliza
     BuilderEndereco ..> Endereco : create
     Endereco o-- Usuario : associação
@@ -295,7 +295,7 @@ ControlarRequisicao controlarRequisicao = ControlarRequisicao.create();
 ### Model
 ```mermaid
 classDiagram
-    %% Classe ControlarRequisicao - Implementa o padrão Singleton
+    c% Classe ControlarRequisicao - Implementa o padrão Singleton
     class ControlarRequisicao {
         -instance: ControlarRequisicao
         -ControlarRequisicao() // Construtor privado
@@ -305,7 +305,7 @@ classDiagram
 
 ## Quando usar Prototype?
 
-Quando queremo criar instancias de uma mesma classe de forma rapida. 
+cuando queremo criar instancias de uma mesma classe de forma rapida. 
 
 ```js
 interface FabricaAbstrata {
@@ -335,7 +335,7 @@ Model model = Fabrica.create("Model")
 
 
 ```
-Criando Clones da minha classe com dados já preenchidos.
+criando Clones da minha classe com dados já preenchidos.
 
 ```js
 interface FabricaAbstrata {
@@ -392,14 +392,14 @@ classDiagram
         +clone() any
     }
 
-    %% Classe Model - Implementa Prototype e possui um atributo nome
+    c% Classe Model - Implementa Prototype e possui um atributo nome
     class Model {
         -nome: String
         +clone() Model
     }
     Prototype <|.. Model
 
-    %% Classe FabricaModel - Implementa FabricaAbstrata e utiliza Model
+    c% Classe FabricaModel - Implementa FabricaAbstrata e utiliza Model
     class FabricaModel {
         +create(nomedofi: String) any
     }

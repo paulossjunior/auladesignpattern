@@ -4,7 +4,6 @@
 
 Quando eu quero separar o algoritmo/comportamento da estrutura da classe.
 
-
 ```js
 class CalcularImpostoRenda {
 
@@ -119,32 +118,32 @@ instance.calcularImposto(1000)
 ```mermaid
 classDiagram
     %% Interface Calcular - Define o método de cálculo
-    class Calcular {
+    Class Calcular {
         <<interface>>
         +executar(valor: double) int
     }
 
     %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000 com taxa de 10%
-    class CalcularRendaAteh1000 {
+    Class CalcularRendaAteh1000 {
         +executar(valor: double) int
     }
     Calcular <|.. CalcularRendaAteh1000
 
     %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000 com taxa de 20%
-    class CalcularRendaAcima1000 {
+    Class CalcularRendaAcima1000 {
         +executar(valor: double) int
     }
     Calcular <|.. CalcularRendaAcima1000
 
     %% Classe CalcularImpostoRenda - Utiliza Calcular para calcular o imposto de renda
-    class CalcularImpostoRenda {
+    Class CalcularImpostoRenda {
         -Calcular calcular
         +calcularImposto(valor: double) int
     }
     CalcularImpostoRenda ..> Calcular : usa
 
     %% Classe Fabrica - Cria a instância apropriada de CalcularImpostoRenda com base no valor
-    class Fabrica {
+    Class Fabrica {
         +static create(valor: double) CalcularImpostoRenda
     }
     Fabrica ..> CalcularImpostoRenda : cria instância
@@ -214,7 +213,7 @@ instance.executar(1900)
 
 ```
 ```mermaid
-classDiagram
+ClassDiagram
     %% Interface Calcular - Define métodos para a cadeia de responsabilidade
     class Calcular {
         <<interface>>
@@ -224,7 +223,7 @@ classDiagram
     }
 
     %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000
-    class CalcularRendaAcima1000 {
+    Class CalcularRendaAcima1000 {
         -Calcular next
         +math(valor: double) boolean
         +setNext(calcular: Calcular)
@@ -233,7 +232,7 @@ classDiagram
     Calcular <|.. CalcularRendaAcima1000
 
     %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000
-    class CalcularRendaAteh1000 {
+    Class CalcularRendaAteh1000 {
         -Calcular next
         +math(valor: double) boolean
         +setNext(calcular: Calcular)
@@ -242,7 +241,7 @@ classDiagram
     Calcular <|.. CalcularRendaAteh1000
 
     %% Classe Fabrica - Cria a cadeia de responsabilidades para Calcular
-    class Fabrica {
+    Class Fabrica {
         -Calcular index
         +Fabrica()
         +static create() Calcular

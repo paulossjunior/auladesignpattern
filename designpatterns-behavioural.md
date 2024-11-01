@@ -115,40 +115,42 @@ CalcularImpostoRenda instance = Fabrica.create(1000)
 instance.calcularImposto(1000)
 
 ```
+
 ```mermaid
 classDiagram
     %% Interface Calcular - Define o método de cálculo
-    Class Calcular {
+    class Calcular {
         <<interface>>
         +executar(valor: double) int
     }
 
     %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000 com taxa de 10%
-    Class CalcularRendaAteh1000 {
+    class CalcularRendaAteh1000 {
         +executar(valor: double) int
     }
     Calcular <|.. CalcularRendaAteh1000
 
     %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000 com taxa de 20%
-    Class CalcularRendaAcima1000 {
+    class CalcularRendaAcima1000 {
         +executar(valor: double) int
     }
     Calcular <|.. CalcularRendaAcima1000
 
     %% Classe CalcularImpostoRenda - Utiliza Calcular para calcular o imposto de renda
-    Class CalcularImpostoRenda {
+    class CalcularImpostoRenda {
         -Calcular calcular
         +calcularImposto(valor: double) int
     }
     CalcularImpostoRenda ..> Calcular : usa
 
     %% Classe Fabrica - Cria a instância apropriada de CalcularImpostoRenda com base no valor
-    Class Fabrica {
+    class Fabrica {
         +static create(valor: double) CalcularImpostoRenda
     }
     Fabrica ..> CalcularImpostoRenda : cria instância
     Fabrica ..> CalcularRendaAteh1000 : cria instância
     Fabrica ..> CalcularRendaAcima1000 : cria instância
+
 
 ```
 
@@ -212,8 +214,9 @@ instance.executar(900)
 instance.executar(1900)
 
 ```
+
 ```mermaid
-ClassDiagram
+classDiagram
     %% Interface Calcular - Define métodos para a cadeia de responsabilidade
     class Calcular {
         <<interface>>
@@ -223,7 +226,7 @@ ClassDiagram
     }
 
     %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000
-    Class CalcularRendaAcima1000 {
+    class CalcularRendaAcima1000 {
         -Calcular next
         +math(valor: double) boolean
         +setNext(calcular: Calcular)
@@ -232,7 +235,7 @@ ClassDiagram
     Calcular <|.. CalcularRendaAcima1000
 
     %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000
-    Class CalcularRendaAteh1000 {
+    class CalcularRendaAteh1000 {
         -Calcular next
         +math(valor: double) boolean
         +setNext(calcular: Calcular)
@@ -241,7 +244,7 @@ ClassDiagram
     Calcular <|.. CalcularRendaAteh1000
 
     %% Classe Fabrica - Cria a cadeia de responsabilidades para Calcular
-    Class Fabrica {
+    class Fabrica {
         -Calcular index
         +Fabrica()
         +static create() Calcular

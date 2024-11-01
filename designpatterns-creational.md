@@ -61,15 +61,15 @@ ModelX modelx = (ModelX) Fabrica.createModel("ModelX");
 ## Model Fabrica
 ```mermaid
 classDiagram
-    c% Classe Model - Representa um tipo de modelo
+    %% Classe Model - Representa um tipo de modelo
     class Model {
     }
 
-    c% Classe ModelX - Representa outro tipo de modelo
+    %% Classe ModelX - Representa outro tipo de modelo
     class ModelX {
     }
 
-    c% Classe Fabrica - Implementa o método de fábrica
+    %% Classe Fabrica - Implementa o método de fábrica
     class Fabrica {
         +static createModel(modelName: String) Object
     }
@@ -77,6 +77,7 @@ classDiagram
     %% Relações de Fabrica com Model e ModelX
     Fabrica ..> Model : createModel("Model")
     Fabrica ..> ModelX : createModel("ModelX")
+
 
 ```
 
@@ -166,20 +167,20 @@ classDiagram
         +create(nomedofi: String) any
     }
 
-    c% Classe Model - Representa um tipo de modelo
+    %% Classe Model - Representa um tipo de modelo
     class Model {
     }
 
-    c% Classe ModelX - Representa outro tipo de modelo
+    %% Classe ModelX - Representa outro tipo de modelo
     class ModelX {
     }
 
-    c% Classe FabricaModel - Implementa a interface FabricaAbstrata para criar instâncias de Model
+    %% Classe FabricaModel - Implementa a interface FabricaAbstrata para criar instâncias de Model
     class FabricaModel {
         +create(nomedofi: String) any
     }
 
-    c% Classe FabricaModelX - Implementa a interface FabricaAbstrata para criar instâncias de ModelX
+    %% Classe FabricaModelX - Implementa a interface FabricaAbstrata para criar instâncias de ModelX
     class FabricaModelX {
         +create(nomedofi: String) any
     }
@@ -188,6 +189,7 @@ classDiagram
     FabricaAbstrata <|-- FabricaModelX
     FabricaModel ..> Model : create("Model")
     FabricaModelX ..> ModelX : create("ModelX")
+
 ``` 
 
 ## Quando usar o Builder?
@@ -238,29 +240,30 @@ Endereco endereco = FabricaEndereco.create("Zé")
 ## Model
 ```mermaid
 classDiagram
-    c% Classe BuilderEndereco - Responsável por construir o Endereco
+    %% Classe BuilderEndereco - Responsável por construir o Endereco
     class BuilderEndereco {
         +Endereco create(nome_usuario: String)
     }
 
-    c% Classe FabricaEndereco - Fabrica que utiliza o BuilderEndereco para criar Endereco
+    %% Classe FabricaEndereco - Fabrica que utiliza o BuilderEndereco para criar Endereco
     class FabricaEndereco {
         +Endereco create(nome_usuario: String)
     }
 
-    c% Classe Usuario - Representa o usuário
+    %% Classe Usuario - Representa o usuário
     class Usuario {
     }
 
-    c% Classe Endereco - Representa o endereço associado ao usuário
+    %% Classe Endereco - Representa o endereço associado ao usuário
     class Endereco {
         +Endereco(usuario: Usuario)
     }
 
-    c% Relacionamentos entre as classes
+    %% Relacionamentos entre as classes
     FabricaEndereco ..> BuilderEndereco : utiliza
     BuilderEndereco ..> Endereco : create
     Endereco o-- Usuario : associação
+
 
 ```
 ## Quando usar Singleton?
@@ -295,12 +298,13 @@ ControlarRequisicao controlarRequisicao = ControlarRequisicao.create();
 ### Model
 ```mermaid
 classDiagram
-    c% Classe ControlarRequisicao - Implementa o padrão Singleton
+    %% Classe ControlarRequisicao - Implementa o padrão Singleton
     class ControlarRequisicao {
         -instance: ControlarRequisicao
         -ControlarRequisicao() // Construtor privado
         +static create(): ControlarRequisicao
     }
+
 ```
 
 ## Quando usar Prototype?
@@ -392,19 +396,20 @@ classDiagram
         +clone() any
     }
 
-    c% Classe Model - Implementa Prototype e possui um atributo nome
+    %% Classe Model - Implementa Prototype e possui um atributo nome
     class Model {
         -nome: String
         +clone() Model
     }
     Prototype <|.. Model
 
-    c% Classe FabricaModel - Implementa FabricaAbstrata e utiliza Model
+    %% Classe FabricaModel - Implementa FabricaAbstrata e utiliza Model
     class FabricaModel {
         +create(nomedofi: String) any
     }
     FabricaAbstrata <|.. FabricaModel
     FabricaModel ..> Model : utiliza
+
 
 ```
 

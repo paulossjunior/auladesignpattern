@@ -1,258 +1,211 @@
-# Padrões Comportamental
+# Padrões de Projeto Comportamentais
 
-## Quando usar o Strategy ?
+## 📚 Introdução
+Os padrões comportamentais lidam com a comunicação entre objetos, definindo como eles interagem e distribuem responsabilidades. Neste documento, focaremos em dois padrões importantes: Strategy e Chain of Responsibility.
 
-Quando eu quero separar o algoritmo/comportamento da estrutura da classe.
+## 🎯 Strategy Pattern
 
-```js
+### Objetivo
+O Strategy Pattern permite definir uma família de algoritmos, encapsular cada um deles e torná-los intercambiáveis. Permite que o algoritmo varie independentemente dos clientes que o utilizam.
+
+### Quando Usar?
+- Quando você tem variantes de um mesmo algoritmo
+- Quando precisa isolar a lógica do algoritmo dos detalhes de implementação
+- Quando há muitas condicionais relacionadas a variantes de um mesmo algoritmo
+
+### Exemplo Prático: Cálculo de Imposto de Renda
+
+#### ❌ Sem Strategy (Problema)
+```javascript
 class CalcularImpostoRenda {
-
-   public int calcularImposto (valor: double){
-        //Todo o comportamento ta no metodo
-        if (valor < 1000){
-            //realizar calculo com 10%
+   public int calcularImposto(valor: double) {
+        if (valor < 1000) {
+            return valor * 0.1; // 10%
         }
-        if (valor > 1000 and valor < 3000){
-            //realizar calculo com 20%
+        if (valor > 1000 && valor < 3000) {
+            return valor * 0.2; // 20%
         }
-
-        return resultado
+        return valor * 0.3; // 30%
    }
 }
 ```
 
-Podemos colocar o algoritmo em classes
-
-```js
-
+#### ✅ Com Strategy (Solução)
+```javascript
 interface Calcular {
-
-   public int executar (valor: double) 
+   public int executar(valor: double);
 }
 
-class CalcularRendaAteh1000 implments Calcular {
-   public int executar (valor: double) {
-    //realizar calculo com 10%
+class CalcularRendaAteh1000 implements Calcular {
+   public int executar(valor: double) {
+       return valor * 0.1; // 10%
    }
 }
 
-
-class CalcularRendaacima1000 implments Calcular {
-   public int executar (valor: double) {
-    //realizar calculo com 20%
+class CalcularRendaAcima1000 implements Calcular {
+   public int executar(valor: double) {
+       return valor * 0.2; // 20%
    }
 }
 
 class CalcularImpostoRenda {
-    Calcular calcular;
+    private Calcular calcular;
 
-   public int calcularImposto (valor: double){
-        return calcular.executar(valor)
-   }
+    public CalcularImpostoRenda(Calcular calcular) {
+        this.calcular = calcular;
+    }
+
+    public int calcularImposto(valor: double) {
+        return calcular.executar(valor);
+    }
 }
-
-
-CalcularImpostoRenda instance = new CalcularImpostoRenda(new CalcularRendaAteh1000() )
-
-instance.calcularImposto(200)
-
-
-CalcularImpostoRenda instance = new CalcularImpostoRenda(new CalcularRendaacima1000() )
-instance.calcularImposto(200000)
-
 ```
 
-Aplicando o Metodo Fabrica
+### 🏭 Implementação com Factory Pattern
+```javascript
+class FabricaImpostoRenda {
+    public static CalcularImpostoRenda create(valor: double) {
+        Calcular calcular = valor < 1000 
+            ? new CalcularRendaAteh1000()
+            : new CalcularRendaAcima1000();
 
-Podemos colocar o algoritmo em classes
-
-```js
-
-interface Calcular {
-
-   public int executar (valor: double) 
-}
-
-class CalcularRendaAteh1000 implments Calcular {
-   public int executar (valor: double) {
-    //realizar calculo com 10%
-   }
-}
-
-
-class CalcularRendaacima1000 implments Calcular {
-   public int executar (valor: double) {
-    //realizar calculo com 20%
-   }
-}
-
-class CalcularImpostoRenda {
-    Calcular calcular;
-
-   public int calcularImposto (valor: double){
-        return calcular.executar(valor)
-   }
-}
-
-
-class Fabrica {
-
-    public static CalcularImpostoRenda create (valor: double){
-
-        Calcular calcular = null;
-
-        if (valor < 1000){
-            calcular = new CalcularRendaAteh1000()
-        }else{
-            calcular = new CalcularRendaacima1000() 
-        }
-
-        CalcularImpostoRenda instance = new CalcularImpostoRenda(calcular)
+        return new CalcularImpostoRenda(calcular);
     }
 }
 
-CalcularImpostoRenda instance = Fabrica.create(1000)
-instance.calcularImposto(1000)
-
+// Uso
+CalcularImpostoRenda calculadora = FabricaImpostoRenda.create(valor);
+int imposto = calculadora.calcularImposto(valor);
 ```
 
+## ⛓️ Chain of Responsibility Pattern
+
+### Objetivo
+Permite que você passe solicitações ao longo de uma cadeia de handlers. Ao receber uma solicitação, cada handler decide processar a solicitação ou passá-la para o próximo handler na cadeia.
+
+### Quando Usar?
+- Quando mais de um objeto pode tratar uma solicitação e o handler não é conhecido a priori
+- Quando você quer passar uma solicitação para um dentre vários objetos, sem especificar o receptor explicitamente
+- Quando o conjunto de objetos que pode tratar uma solicitação deve ser especificado dinamicamente
+
+### Exemplo Prático: Cálculo de Imposto com Cadeia
+
+```javascript
+interface Calcular {
+   public boolean match(valor: double);
+   public int executar(valor: double);
+   public void setNext(Calcular calcular);
+}
+
+class CalcularRendaAcima1000 implements Calcular {
+    private Calcular next = null;
+   
+    public boolean match(valor: double) {
+        return valor > 1000;
+    }
+
+    public void setNext(Calcular calcular) {
+        this.next = calcular;
+    }   
+
+    public int executar(valor: double) {
+        if (this.match(valor)) {
+            return valor * 0.2; // 20%
+        }
+        return this.next != null ? this.next.executar(valor) : 0;
+    }
+}
+
+class FabricaCadeia {
+    private static Calcular montarCadeia() {
+        Calcular calculadoraBase = new CalcularRendaAteh1000();
+        Calcular calculadoraMedia = new CalcularRendaAcima1000();
+        
+        calculadoraBase.setNext(calculadoraMedia);
+        return calculadoraBase;
+    }
+
+    public static Calcular create() {
+        return montarCadeia();
+    }
+}
+```
+
+### 🔄 Diagrama de Classes
+
+#### Strategy Pattern
 ```mermaid
 classDiagram
-    %% Interface Calcular - Define o método de cálculo
     class Calcular {
         <<interface>>
         +executar(valor: double) int
     }
-
-    %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000 com taxa de 10%
     class CalcularRendaAteh1000 {
         +executar(valor: double) int
     }
-    Calcular <|.. CalcularRendaAteh1000
-
-    %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000 com taxa de 20%
     class CalcularRendaAcima1000 {
         +executar(valor: double) int
     }
-    Calcular <|.. CalcularRendaAcima1000
-
-    %% Classe CalcularImpostoRenda - Utiliza Calcular para calcular o imposto de renda
     class CalcularImpostoRenda {
         -Calcular calcular
         +calcularImposto(valor: double) int
     }
-    CalcularImpostoRenda ..> Calcular : usa
-
-    %% Classe Fabrica - Cria a instância apropriada de CalcularImpostoRenda com base no valor
-    class Fabrica {
-        +static create(valor: double) CalcularImpostoRenda
-    }
-    Fabrica ..> CalcularImpostoRenda : cria instância
-    Fabrica ..> CalcularRendaAteh1000 : cria instância
-    Fabrica ..> CalcularRendaAcima1000 : cria instância
-
-
+    Calcular <|.. CalcularRendaAteh1000
+    Calcular <|.. CalcularRendaAcima1000
+    CalcularImpostoRenda --> Calcular
 ```
 
-## Quando usar a Cadeia de responsabilidade ?
-
-Quando temos comportamentos que podem ser encadeados e passar para classes especificadas.
-
-```js
-
-interface Calcular {
-
-   public boolean math (valor: double)
-   public int executar (valor: double)
-   public setNext(calcular: Calcular) 
-}
-
-class CalcularRendaacima1000 implments Calcular {
-
-    Calcular next = null
-   
-   public boolean math (valor: double){
-        return valor > 1000?  true : false   
-   } 
-
-   public setNext(calcular: Calcular){
-     Calcular next = calcular
-   }   
-
-   public int executar (valor: double) {
-     if (this.math(valor)){
-        return //faca a aconta 
-     }else {
-        return this.next.executar (valor)
-     }
-   }
-}
-
-class Fabrica {
-
-    calcular index = null
-
-    public Fabrica (){
-
-        index = new CalcularRendaAteh1000()
-        calcular calcularRendaacima1000 = new CalcularRendaacima1000()
-
-        //Criando a lista encadeada
-        calculareh1000.setNext(calcularRendaacima1000)
-
-    }
-
-    public static CalcularImpostoRenda create (){
-            return index
-    }
-}
-
-Calcular instance = Fabrica.create()
-//executa a conta de até 1000 reais chamando CalcularRendaAteh1000
-instance.executar(900)
-//executa a conta acima de 1000 reais chamando CalcularRendaacima1000
-instance.executar(1900)
-
-```
-
+#### Chain of Responsibility Pattern
 ```mermaid
 classDiagram
-    %% Interface Calcular - Define métodos para a cadeia de responsabilidade
     class Calcular {
         <<interface>>
-        +math(valor: double) boolean
+        +match(valor: double) boolean
         +executar(valor: double) int
         +setNext(calcular: Calcular)
     }
-
-    %% Classe CalcularRendaAcima1000 - Implementa Calcular para valores acima de 1000
     class CalcularRendaAcima1000 {
         -Calcular next
-        +math(valor: double) boolean
+        +match(valor: double) boolean
         +setNext(calcular: Calcular)
         +executar(valor: double) int
     }
     Calcular <|.. CalcularRendaAcima1000
-
-    %% Classe CalcularRendaAteh1000 - Implementa Calcular para valores até 1000
-    class CalcularRendaAteh1000 {
-        -Calcular next
-        +math(valor: double) boolean
-        +setNext(calcular: Calcular)
-        +executar(valor: double) int
-    }
-    Calcular <|.. CalcularRendaAteh1000
-
-    %% Classe Fabrica - Cria a cadeia de responsabilidades para Calcular
-    class Fabrica {
-        -Calcular index
-        +Fabrica()
-        +static create() Calcular
-    }
-    
-    %% Relacionamento de Fabrica com os nós da cadeia
-    Fabrica ..> CalcularRendaAteh1000 : inicializa
-    Fabrica ..> CalcularRendaAcima1000 : inicializa
-    CalcularRendaAteh1000 --> CalcularRendaAcima1000 : next
-
+    CalcularRendaAcima1000 --> Calcular : next
 ```
+
+## 📝 Principais Diferenças
+
+### Strategy
+- Encapsula diferentes algoritmos para uma mesma tarefa
+- Permite troca de algoritmos em tempo de execução
+- Cada estratégia é independente das outras
+
+### Chain of Responsibility
+- Cria uma cadeia de objetos processadores
+- Cada objeto decide se processa ou passa adiante
+- Ordem de processamento é importante
+- Permite adicionar ou remover responsabilidades dinamicamente
+
+## 🎯 Benefícios
+
+1. **Melhor Organização do Código**
+   - Separação clara de responsabilidades
+   - Código mais limpo e manutenível
+   - Facilita testes unitários
+
+2. **Flexibilidade**
+   - Fácil adicionar novos comportamentos
+   - Alterações localizadas
+   - Redução de acoplamento
+
+3. **Reutilização**
+   - Comportamentos podem ser reutilizados
+   - Menos duplicação de código
+   - Maior modularidade
+
+## ⚠️ Considerações
+- Escolha o padrão adequado para cada situação
+- Evite sobrecomplexidade em casos simples
+- Mantenha a documentação atualizada
+- Considere o impacto na performance

@@ -180,5 +180,6 @@ Os (padrões comportamentais)[designpatterns-behavioural.md] lidam com a comunic
 
 ## 📚 Recursos Adicionais
 - "Design Patterns: Elements of Reusable Object-Oriented Software" (Gang of Four)
-- "Head First Design Patterns"
-- Repositórios de exemplos práticos no GitHub
+- Clean Architecture (Robert C. Martin)
+- Patterns of Enterprise Application Architecture (Martin Fowler)
+- Building Microservices (Sam Newman)

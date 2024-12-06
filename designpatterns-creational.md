@@ -1,47 +1,30 @@
-# Padrões Criativos
+# Padrões de Projeto Criacionais
 
-## Quando usar o Método Fabrica?
+## 📚 Introdução
+Os padrões criacionais são responsáveis por abstrair o processo de instanciação de objetos, tornando um sistema independente de como seus objetos são criados, compostos e representados.
 
-**Quando precisarmos organizar os Instanciações!**  
+## 🏭 Factory Method (Método Fábrica)
 
-```js
-class Model(){
+### Objetivo
+Encapsular a lógica de criação de objetos em um método específico, permitindo que subclasses alterem o tipo de objetos que serão criados.
 
+### Quando Usar?
+- Para centralizar a lógica de criação de objetos
+- Quando há necessidade de organizar instanciações
+- Para desacoplar o código que cria do código que usa os objetos
+
+### Exemplo Prático
+```javascript
+class Model {
+    // Implementação base
 }
 
-class ModelX(){
-
+class ModelX extends Model {
+    // Implementação específica
 }
-
-import Model
-import ModelX
-import x.yz.g.z.Model
-
-Model model = new Model()
-Model modelx = new ModelX()
-Model modelxx = new ModelX()
-Model modelxx = new ModelX()
-
-```
-
-* Usando Metodo Fabrica
-
-```js
-class Model(){
-
-}
-
-class ModelX(){
-
-}
-
 
 class Fabrica {
-    import Model
-    import ModelX
-    import x.yz.g.z.Model
-
-    public static Object createModel(String modelName) {
+    public static Model createModel(String modelName) {
         switch (modelName) {
             case "Model":
                 return new Model();
@@ -53,363 +36,224 @@ class Fabrica {
     }
 }
 
-c/ Uso da classe Fabrica para criar instâncias
-Model model = (Model) Fabrica.createModel("Model");
-ModelX modelx = (ModelX) Fabrica.createModel("ModelX");
-
-```
-## Model Fabrica
-```mermaid
-classDiagram
-    %% Classe Model - Representa um tipo de modelo
-    class Model {
-    }
-
-    %% Classe ModelX - Representa outro tipo de modelo
-    class ModelX {
-    }
-
-    %% Classe Fabrica - Implementa o método de fábrica
-    class Fabrica {
-        +static createModel(modelName: String) Object
-    }
-
-    %% Relações de Fabrica com Model e ModelX
-    Fabrica ..> Model : createModel("Model")
-    Fabrica ..> ModelX : createModel("ModelX")
-
-
+// Uso
+Model model = Fabrica.createModel("Model");
+ModelX modelX = (ModelX) Fabrica.createModel("ModelX");
 ```
 
-### Quando usar o Método Fabrica Abstrata?
+## 🏭 Abstract Factory (Fábrica Abstrata)
 
-Resposta: Para definir um padrão de Métodos Fabricas
+### Objetivo
+Fornecer uma interface para criar famílias de objetos relacionados sem especificar suas classes concretas.
 
-```js
-class Model(){
+### Quando Usar?
+- Quando o sistema precisa ser independente de como seus produtos são criados
+- Para criar famílias de objetos relacionados
+- Quando você tem várias famílias de produtos
 
-}
-
-class ModelX(){
-
-}
-
-
-class FabricaModel {
-    import Model
-
-    public static createModel(String modelName){
-        return funcaoparaInstanciar(modelName)
-
-    }
-}
-
-class FabricaModelX {
-    import ModelX
-
-    public static createX(String modelName){
-        return funcaoparaInstanciar(modelName)
-
-    }
-}
-
-Model model = Fabrica.createModel("Model")
-Model modelx = FabricaModelX.createX("Modelx")
-
-```
-
-Aplicando Fabrica Abstrata
-
-```js
+### Exemplo Prático
+```javascript
 interface FabricaAbstrata {
-
-    public any create(String nomedofi)
+    public Object create(String identificador);
 }
 
-class Model(){
-
-}
-
-class ModelX(){
-
-}
-
-
-class FabricaModel implements FabricaAbstrata{
-    import Model
-
-    public any create(String nomedofi){
-        return funcaoparaInstanciar(modelName)
-
+class FabricaModel implements FabricaAbstrata {
+    public Object create(String identificador) {
+        return new Model(identificador);
     }
 }
 
 class FabricaModelX implements FabricaAbstrata {
-    import ModelX
-
-    public any create(String nomedofi){{
-        return funcaoparaInstanciar(modelName)
-
+    public Object create(String identificador) {
+        return new ModelX(identificador);
     }
-
 }
 
-Model model = Fabrica.create("Model")
-Model modelx = FabricaModelX.create("Modelx")
-
+// Uso
+FabricaAbstrata fabricaModel = new FabricaModel();
+Model model = (Model) fabricaModel.create("basic");
 ```
-## Modelo do Fabrica Abstrata
 
+## 🏗️ Builder
+
+### Objetivo
+Separar a construção de um objeto complexo da sua representação, permitindo criar diferentes representações usando o mesmo processo de construção.
+
+### Quando Usar?
+- Para construir objetos complexos passo a passo
+- Quando o objeto precisa ser construído em uma sequência específica
+- Quando o processo de construção deve permitir diferentes representações do objeto
+
+### Exemplo Prático
+```javascript
+class BuilderEndereco {
+    private Usuario usuario;
+    private String rua;
+    private String cidade;
+
+    public BuilderEndereco comUsuario(String nomeUsuario) {
+        this.usuario = new Usuario(nomeUsuario);
+        return this;
+    }
+
+    public BuilderEndereco comRua(String rua) {
+        this.rua = rua;
+        return this;
+    }
+
+    public BuilderEndereco comCidade(String cidade) {
+        this.cidade = cidade;
+        return this;
+    }
+
+    public Endereco build() {
+        return new Endereco(usuario, rua, cidade);
+    }
+}
+
+// Uso
+Endereco endereco = new BuilderEndereco()
+    .comUsuario("João")
+    .comRua("Rua Principal")
+    .comCidade("São Paulo")
+    .build();
+```
+
+## 🔒 Singleton
+
+### Objetivo
+Garantir que uma classe tenha apenas uma instância e fornecer um ponto global de acesso a ela.
+
+### Quando Usar?
+- Para controlar acesso a recursos compartilhados
+- Quando precisar exatamente de uma instância para coordenar ações no sistema
+- Para substituir variáveis globais
+
+### Exemplo Prático
+```javascript
+class ControleRequisicao {
+    private static ControleRequisicao instance;
+    private int numeroRequisicoes;
+
+    private ControleRequisicao() {
+        numeroRequisicoes = 0;
+    }
+
+    public static ControleRequisicao getInstance() {
+        if (instance == null) {
+            instance = new ControleRequisicao();
+        }
+        return instance;
+    }
+
+    public void registrarRequisicao() {
+        numeroRequisicoes++;
+    }
+}
+
+// Uso
+ControleRequisicao controle = ControleRequisicao.getInstance();
+```
+
+## 🔄 Prototype
+
+### Objetivo
+Especificar os tipos de objetos a serem criados usando uma instância protótipo e criar novos objetos copiando este protótipo.
+
+### Quando Usar?
+- Quando a criação de um objeto é custosa ou complexa
+- Para criar cópias de objetos mantendo o desempenho
+- Quando as classes a instanciar são especificadas em tempo de execução
+
+### Exemplo Prático
+```javascript
+interface Prototype<T> {
+    T clone();
+}
+
+class Model implements Prototype<Model> {
+    private String nome;
+    private Map<String, Object> propriedades;
+
+    public Model clone() {
+        Model clone = new Model();
+        clone.setNome(this.nome);
+        clone.setPropriedades(new HashMap<>(this.propriedades));
+        return clone;
+    }
+}
+
+// Uso
+Model prototype = new Model();
+prototype.setNome("ModeloBase");
+Model clone1 = prototype.clone();
+clone1.setNome("Clone1");
+```
+
+## 📊 Diagramas de Classe
+
+### Factory Method
 ```mermaid
 classDiagram
-    %% Interface FabricaAbstrata - Declara o método de fábrica
-    class FabricaAbstrata {
-        +create(nomedofi: String) any
+    class Fabrica {
+        +static createModel(modelName: String) Model
     }
-
-    %% Classe Model - Representa um tipo de modelo
     class Model {
     }
-
-    %% Classe ModelX - Representa outro tipo de modelo
     class ModelX {
     }
-
-    %% Classe FabricaModel - Implementa a interface FabricaAbstrata para criar instâncias de Model
-    class FabricaModel {
-        +create(nomedofi: String) any
-    }
-
-    %% Classe FabricaModelX - Implementa a interface FabricaAbstrata para criar instâncias de ModelX
-    class FabricaModelX {
-        +create(nomedofi: String) any
-    }
-
-    FabricaAbstrata <|-- FabricaModel
-    FabricaAbstrata <|-- FabricaModelX
-    FabricaModel ..> Model : create("Model")
-    FabricaModelX ..> ModelX : create("ModelX")
-
-``` 
-
-## Quando usar o Builder?
-
-Quando temos que definir etapas para criar um objeto! Em objetos complexos
-
-```js
-class Usuario {
-
-    
-}
-
-class endereco {
-
-    usuario:usuario
-}
-
-usuario Usuario = new Usuario()
-endereco endereco = new Endereco (usuario)
-
+    Fabrica ..> Model : creates
+    Fabrica ..> ModelX : creates
+    Model <|-- ModelX
 ```
 
-Perceba que para criar o Endereco é necessário ter um usuario .. assim ele é complexo
-
-Forçando a Barra com o builder
-
-```js
-class BuilderEndereco {
-
-    public Endereco create (nome_usuario: string){
-         Usuario usuario = Fabrica.create (nome_usuario)
-        return new Endereco(usuario)
-    }
-}
-class FabricaEndereco {
-
-    create (nome_usuario: String){
-       
-        Endereco endereco = BuilderEndereco.create (nome_usuario)
-        return endereco
-
-    } 
-
-}
-
-Endereco endereco = FabricaEndereco.create("Zé")
-```
-## Model
+### Abstract Factory
 ```mermaid
 classDiagram
-    %% Classe BuilderEndereco - Responsável por construir o Endereco
-    class BuilderEndereco {
-        +Endereco create(nome_usuario: String)
-    }
-
-    %% Classe FabricaEndereco - Fabrica que utiliza o BuilderEndereco para criar Endereco
-    class FabricaEndereco {
-        +Endereco create(nome_usuario: String)
-    }
-
-    %% Classe Usuario - Representa o usuário
-    class Usuario {
-    }
-
-    %% Classe Endereco - Representa o endereço associado ao usuário
-    class Endereco {
-        +Endereco(usuario: Usuario)
-    }
-
-    %% Relacionamentos entre as classes
-    FabricaEndereco ..> BuilderEndereco : utiliza
-    BuilderEndereco ..> Endereco : create
-    Endereco o-- Usuario : associação
-
-
-```
-## Quando usar Singleton?
-
-Quando queremos ter um ponto único para controlar o acesso e o uso de um recurso.
-
-Por exemplo, controlar o número de requisições no banco de dados.
-
-```js
-
-class ControlarRequisicao{
-
-    private instance: ControlarRequisicao
-
-    // Metodo contrutor privado
-    private ControlarRequisicao()
-    // Unico metodo para criar a instancia
-    public static ControlarRequisicao create(){
-        
-        if (instance == null){
-            this.instance = new ControlarRequisicao()
-        }
-
-        return this.instance
-
-    }
-}
-
-ControlarRequisicao controlarRequisicao = ControlarRequisicao.create();
-
-```
-### Model
-```mermaid
-classDiagram
-    %% Classe ControlarRequisicao - Implementa o padrão Singleton
-    class ControlarRequisicao {
-        -instance: ControlarRequisicao
-        -ControlarRequisicao() // Construtor privado
-        +static create(): ControlarRequisicao
-    }
-
-```
-
-## Quando usar Prototype?
-
-cuando queremo criar instancias de uma mesma classe de forma rapida. 
-
-```js
-interface FabricaAbstrata {
-
-    public any create(String nomedofi)
-}
-
-class Model(){
-
-}
-
-
-class FabricaModel implements FabricaAbstrata{
-    import Model
-
-    public any create(String nomedofi){
-        return funcaoparaInstanciar(modelName)
-
-    }
-}
-
-
-Model model = Fabrica.create("Model")
-Model model = Fabrica.create("Model")
-Model model = Fabrica.create("Model")
-Model model = Fabrica.create("Model")
-
-
-```
-criando Clones da minha classe com dados já preenchidos.
-
-```js
-interface FabricaAbstrata {
-
-    public any create(String nomedofi)
-}
-
-interface Prototype <T> {
-
-    public T clone()
-}
-
-class Model implements Prototype{
-
-    nome: string
-
-    public Model clone(){
-
-        return new Mode(nome)
-    }
-
-}
-
-
-class FabricaModel implements FabricaAbstrata{
-    import Model
-
-    public any create(String nomedofi){
-        return funcaoparaInstanciar(modelName)
-
-    }
-}
-
-
-Model model = Fabrica.create("Model")
-model.setNome = "Zé"
-Model modelx = model.clone()
-modelx.setNome = "Joao"
-Model modely = model.clone()
-modely.setNome = "xxx"
-Model modelz = model.clone()
-```
-```mermaid
-classDiagram
-    %% Interface FabricaAbstrata - Declara o método de fábrica
     class FabricaAbstrata {
         <<interface>>
-        +create(nomedofi: String) any
+        +create(identificador: String) Object
     }
-
-    %% Interface Prototype - Declara o método clone
-    class Prototype {
-        <<interface>>
-        +clone() any
-    }
-
-    %% Classe Model - Implementa Prototype e possui um atributo nome
-    class Model {
-        -nome: String
-        +clone() Model
-    }
-    Prototype <|.. Model
-
-    %% Classe FabricaModel - Implementa FabricaAbstrata e utiliza Model
     class FabricaModel {
-        +create(nomedofi: String) any
+        +create(identificador: String) Object
+    }
+    class FabricaModelX {
+        +create(identificador: String) Object
     }
     FabricaAbstrata <|.. FabricaModel
-    FabricaModel ..> Model : utiliza
-
-
+    FabricaAbstrata <|.. FabricaModelX
 ```
 
+## 🎯 Benefícios dos Padrões Criacionais
+
+1. **Flexibilidade**
+   - Desacoplamento entre criação e uso de objetos
+   - Facilidade para trocar implementações
+   - Código mais manutenível
+
+2. **Reutilização**
+   - Redução de duplicação de código
+   - Centralização da lógica de criação
+   - Maior consistência
+
+3. **Manutenibilidade**
+   - Código mais organizado
+   - Separação clara de responsabilidades
+   - Facilidade para testes
+
+## ⚠️ Considerações
+
+1. **Escolha do Padrão**
+   - Analise a complexidade necessária
+   - Considere o impacto na manutenção
+   - Avalie a necessidade real do padrão
+
+2. **Implementação**
+   - Mantenha a simplicidade
+   - Documente as decisões de design
+   - Siga as convenções de nomenclatura
+
+3. **Performance**
+   - Considere o overhead de criação
+   - Avalie o impacto na memória
+   - Balance flexibilidade e desempenho
